@@ -1,0 +1,38 @@
+version: "3.3"
+
+services:
+  nginx:
+    build:
+      context: ./docker/nginx
+    ports:
+      - 80:80
+    volumes:
+      - type: volume
+        source: .
+        target: /var/www/html
+  php:
+    build:
+      context: ./docker/php
+    expose:
+      - 9000
+    volumes:
+      - type: volume
+        source: .
+        target: /var/www/html
+  mysql:
+    build:
+      context: ./docker/mysql
+    expose:
+      - 3306
+    environment:
+      - MYSQL_RANDOM_ROOT_PASSWORD=yes
+    volumes:
+      - type: volume
+        source: ./docker/data
+        target: /var/lib/mysql
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - 8080:80
+    links:
+      - mysql:db
